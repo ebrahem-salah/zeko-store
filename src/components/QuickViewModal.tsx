@@ -239,15 +239,15 @@ export default function QuickViewModal({
               <div className="grid grid-cols-3 gap-2 pt-2 text-[10px] text-zinc-500">
                 <div className="flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300 shrink-0" />
-                  <span>معاينة قبل الدفع</span>
+                  <span>دفع عند الاستلام</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <RefreshCw className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300 shrink-0" />
-                  <span>استبدال 14 يوم</span>
+                  <span>استبدال في نفس اليوم</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Truck className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300 shrink-0" />
-                  <span>شحن سريع لجميع مصر</span>
+                  <span>3 فروع بالسويس</span>
                 </div>
               </div>
             </div>

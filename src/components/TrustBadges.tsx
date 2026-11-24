@@ -1,29 +1,29 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, RefreshCw, Truck, Award } from 'lucide-react';
+import { RefreshCw, MapPin, Award, Zap } from 'lucide-react';
 
 export default function TrustBadges() {
   const badges = [
     {
-      icon: ShieldCheck,
-      title: 'معاينة قبل الدفع',
-      description: 'افتح الشحنة وقيس وعاين منتجك مع المندوب قبل دفع أي مليم.',
-    },
-    {
       icon: RefreshCw,
-      title: 'استبدال واسترجاع 14 يوم',
-      description: 'المقاس مش مظبوط؟ بنبدلك في أسرع وقت وبكل سهولة.',
+      title: 'استبدال واسترجاع في نفس اليوم',
+      description: 'المقاس مش مظبوط؟ بنبدلك في نفس اليوم وبكل سهولة وبدون أي تعقيد.',
     },
     {
-      icon: Truck,
-      title: 'شحن سريع لجميع المحافظات',
-      description: 'توصيل لباب بيتك أينما كنت في مصر مع شحن مجاني للطلبات فوق 800 ج.م.',
+      icon: MapPin,
+      title: '3 فروع في محافظة السويس',
+      description: 'شرفنا بالزيارة في فروعنا بالكورنيش القديم وشارع الرخاوي وميني زيكو.',
     },
     {
       icon: Award,
       title: 'خامات وجودة مضمونة',
       description: 'أقطان مصرية 100%، تقفيل مستورد، وأحذية ماستر كواليتي مريحة للقدم.',
+    },
+    {
+      icon: Zap,
+      title: 'أفضل سعر في مصر',
+      description: 'برند الغلابة - بنقدملك أعلى خامة وأحدث تريند بأقل وأفضل سعر ممكن.',
     }
   ];
 

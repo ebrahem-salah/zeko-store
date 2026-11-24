@@ -168,7 +168,7 @@ export default function ProductCard({
               )}
             </div>
             <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-700">
-              معاينة قبل الدفع ⚡
+              استبدال في نفس اليوم ⚡
             </span>
           </div>
 

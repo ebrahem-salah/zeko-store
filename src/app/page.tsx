@@ -175,7 +175,7 @@ export default function HomePage() {
         <span className="hidden md:inline text-zinc-600">|</span>
         <span className="hidden md:inline text-zinc-300 font-semibold">برند الغلابة - ZeKo Store</span>
         <span className="hidden sm:inline text-zinc-600">|</span>
-        <span className="hidden sm:inline text-zinc-400">🚚 شحن لجميع محافظات مصر ومعاينة قبل الدفع</span>
+        <span className="hidden sm:inline text-zinc-400">⚡ استبدال واسترجاع في نفس اليوم | 📍 3 فروع بالسويس</span>
       </div>
 
       {/* Main Navigation Header */}
@@ -257,7 +257,7 @@ export default function HomePage() {
                 className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>واتساب الإدارة</span>
+                <span>واتساب زيكو ستور</span>
               </a>
 
               {/* Theme Toggle Button */}
@@ -323,7 +323,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto lg:mx-0">
-                تشكيلة حصرية من الهوديز، التيشيرتات الأوفر سايز، السنيكرز المستوردة ماستر كواليتي، والشنط الكروس والكابات والجوارب والملابس الداخلية القطنية 100%. خامات فاخرة، فروعنا بالسويس، وتوصيل سريع مع المعاينة قبل الدفع!
+                تشكيلة حصرية من الهوديز، التيشيرتات الأوفر سايز، السنيكرز المستوردة ماستر كواليتي، والشنط الكروس والكابات والجوارب والملابس الداخلية القطنية 100%. خامات فاخرة، فروعنا بالسويس، مع استبدال واسترجاع في نفس اليوم!
               </p>
 
               {/* Quick action buttons */}
@@ -342,7 +342,7 @@ export default function HomePage() {
                   className="px-5 py-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs sm:text-sm transition flex items-center gap-2"
                 >
                   <MessageSquare className="w-4 h-4 text-emerald-400" />
-                  <span>تواصل مع الإدارة (سيد ورد)</span>
+                  <span>تواصل عبر الواتساب</span>
                 </a>
 
                 <a
@@ -367,8 +367,8 @@ export default function HomePage() {
                   <div className="text-[11px] text-zinc-400">في محافظة السويس</div>
                 </div>
                 <div>
-                  <div className="font-black text-lg text-zinc-100">14 يوم</div>
-                  <div className="text-[11px] text-zinc-400">استبدال واسترجاع</div>
+                  <div className="font-black text-lg text-zinc-100">نفس اليوم</div>
+                  <div className="text-[11px] text-zinc-400">استبدال واسترجاع في نفس اليوم</div>
                 </div>
               </div>
             </div>
@@ -468,7 +468,7 @@ export default function HomePage() {
                 </span>
               </h2>
               <p className="text-xs text-zinc-500 mt-1">
-                معاينة قبل الاستلام والدفع عند الاستلام لجميع محافظات مصر
+                أقوى كولكشن ملابس وسنيكرز في السويس مع ميزة الاستبدال والاسترجاع في نفس اليوم
               </p>
             </div>
 
@@ -531,7 +531,7 @@ export default function HomePage() {
             بتدور على مقاس معين أو موديل مش لاقيه؟
           </h3>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto leading-relaxed">
-            ابعتلنا صورة الموديل أو المقاس المطلوب على الواتساب وفريق زيكو ستور (إدارة: سيد ورد) هيوفرهولك بأحسن سعر وتوصيل لحد باب بيتك مع ميزة المعاينة قبل الدفع!
+            ابعتلنا صورة الموديل أو المقاس المطلوب على الواتساب وفريق زيكو ستور هيوفرهولك بأحسن سعر وتوصيل لحد باب بيتك!
           </p>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <a
@@ -541,7 +541,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>واتساب الإدارة: سيد ورد (01070091692)</span>
+              <span>واتساب زيكو ستور (01070091692)</span>
             </a>
             
             <a
@@ -574,7 +574,7 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="text-zinc-400 leading-relaxed max-w-md">
-                براند أزياء شبابي مصري يقدم أرقى كولكشن ملابس رجالي، أحذية وسنيكرز ماستر كواليتي، شنط، كابات، جوارب وملابس داخلية قطنية 100%. نهتم بأدق تفاصيل الجودة والخامة، مع توفير تجربة شراء مضمونة مع المعاينة قبل الاستلام.
+                براند أزياء شبابي مصري يقدم أرقى كولكشن ملابس رجالي، أحذية وسنيكرز ماستر كواليتي، شنط، كابات، جوارب وملابس داخلية قطنية 100%. نهتم بأدق تفاصيل الجودة والخامة، مع توفير تجربة شراء مضمونة مع استبدال واسترجاع في نفس اليوم.
               </p>
               <div className="flex items-center gap-2 pt-1">
                 <a
@@ -610,22 +610,18 @@ export default function HomePage() {
 
             {/* Contact Info */}
             <div className="space-y-2">
-              <h4 className="text-white font-bold text-sm">الإدارة والتواصل</h4>
-              <ul className="space-y-2 text-zinc-400">
+              <h4 className="text-white font-bold text-sm">التواصل وخدمة العملاء</h4>
+              <ul className="space-y-2.5 text-zinc-400">
                 <li className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-zinc-400" />
-                  <span>الإدارة (سيد ورد): 01070091692</span>
+                  <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>واتساب وطلب أوردرات: <span className="font-mono text-zinc-200">01070091692</span></span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-emerald-400" />
-                  <span>واتساب الإدارة: 01070091692</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-zinc-500" />
-                  <span>خدمة العملاء: 01096986091</span>
+                  <PhoneCall className="w-4 h-4 text-zinc-400 shrink-0" />
+                  <span>خدمة العملاء والاتصال: <span className="font-mono text-zinc-200">01096986091</span></span>
                 </li>
                 <li className="text-[11px] text-zinc-500 pt-1">
-                  متاحين طوال أيام الأسبوع على مدار الساعة.
+                  متاحين طوال أيام الأسبوع لخدمتكم واستبدال فوري في نفس اليوم.
                 </li>
               </ul>
             </div>

@@ -188,7 +188,7 @@ export default function CartDrawer({
                 </div>
                 <h4 className="font-black text-zinc-900 dark:text-white text-lg">تم تحويل طلبك للواتساب!</h4>
                 <p className="text-xs text-zinc-500 leading-relaxed max-w-xs mx-auto">
-                  تم تجهيز تفاصيل طلبك لفريق زيكو ستور (إدارة: سيد ورد). سنقوم بالتأكيد معك ومتابعة الشحن والمعاينة قبل الدفع.
+                  تم تجهيز تفاصيل طلبك لفريق زيكو ستور. سنقوم بالتأكيد معك وتنسيق الاستلام مع ميزة الاستبدال في نفس اليوم.
                 </p>
                 <button
                   onClick={() => {
@@ -268,7 +268,7 @@ export default function CartDrawer({
                     <h4 className="font-bold text-xs text-zinc-900 dark:text-white flex items-center gap-1.5">
                       <span>بيانات الشحن والتوصيل</span>
                       <span className="text-[10px] bg-zinc-200/80 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 px-2 py-0.5 rounded-full font-medium">
-                        معاينة قبل الدفع
+                        دفع عند الاستلام
                       </span>
                     </h4>
                   </div>
@@ -364,7 +364,7 @@ export default function CartDrawer({
                   </span>
                 </div>
                 <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex justify-between text-zinc-900 dark:text-white text-sm font-black">
-                  <span>الإجمالي (دفع بعد المعاينة)</span>
+                  <span>الإجمالي (دفع عند الاستلام)</span>
                   <span className="text-zinc-950 dark:text-white text-base font-black">{total} ج.م</span>
                 </div>
               </div>
@@ -379,14 +379,11 @@ export default function CartDrawer({
               </button>
 
               <div className="flex items-center justify-center gap-3 text-[10px] text-zinc-500">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
-                  معاينة قبل الدفع
-                </span>
+                <span>دفع عند الاستلام</span>
                 <span>•</span>
-                <span>استبدال 14 يوم</span>
+                <span>استبدال في نفس اليوم</span>
                 <span>•</span>
-                <span>فروعنا بالسويس</span>
+                <span>3 فروع بالسويس</span>
               </div>
             </div>
           )}

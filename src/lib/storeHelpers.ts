@@ -102,7 +102,7 @@ export function getSingleProductWhatsAppLink(
 • السعر: ${product.price} ج.م
 • ${sizeText} ${colorText}
 
-هل متاح للشحن الفوري للمحافظات؟`;
+هل متاح للاستلام من الفرع أو التوصيل الفوري؟`;
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }
