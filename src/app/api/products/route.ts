@@ -7,17 +7,19 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    // Check if initial seed is needed
-    const count = await Product.countDocuments();
-    if (count === 0) {
-      await Product.insertMany(INITIAL_PRODUCTS);
-    }
-
     const { searchParams } = new URL(req.url);
     const keyword = searchParams.get('keyword');
     const category = searchParams.get('category');
     const sort = searchParams.get('sort');
     const featured = searchParams.get('featured');
+    const reseed = searchParams.get('reseed');
+
+    // Automatically sync/reseed if count is less than modern catalog size (100) or explicitly requested
+    const count = await Product.countDocuments();
+    if (count < 100 || reseed === 'true') {
+      await Product.deleteMany({});
+      await Product.insertMany(INITIAL_PRODUCTS);
+    }
 
     const filter: any = { inStock: true };
 
