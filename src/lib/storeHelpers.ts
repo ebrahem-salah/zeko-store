@@ -45,9 +45,12 @@ export interface ICustomerOrder {
   total: number;
 }
 
+// Default store phone (Sayed Ward - ZeKo Store official management)
+const DEFAULT_PHONE = process.env.NEXT_PUBLIC_STORE_PHONE || '201070091692';
+
 // Generate direct WhatsApp checkout link
 export function getWhatsAppOrderLink(
-  storePhone: string = '201096986091',
+  storePhone: string = DEFAULT_PHONE,
   order: ICustomerOrder
 ): string {
   const cleanPhone = storePhone.replace(/[^0-9]/g, '');
@@ -83,7 +86,7 @@ ${itemsText}
 
 // Quick 1-click single product WhatsApp order link
 export function getSingleProductWhatsAppLink(
-  storePhone: string = '201096986091',
+  storePhone: string = DEFAULT_PHONE,
   product: IProduct,
   size?: string,
   color?: string

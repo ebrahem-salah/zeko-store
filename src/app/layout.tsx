@@ -4,8 +4,8 @@ import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f59e0b' },
-    { media: '(prefers-color-scheme: dark)', color: '#020617' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f4f5' },
+    { media: '(prefers-color-scheme: dark)', color: '#121214' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -14,21 +14,22 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'متجر زيكو ستور | ZeKo Store - ملابس رجالي، كوتشيات، شنط وإكسسوارات',
-  description: 'المتجر الإلكتروني لـ زيكو ستور (ZeKo Store) - أحدث صيحات الموضة الرجالي، هوديز، سنيكرز ماستر كواليتي، شنط كروس، كابات، وجوارب وملابس داخلية قطن 100%. معاينة قبل الدفع وشحن لجميع محافظات مصر.',
-  keywords: ['زيكو ستور', 'ZeKo Store', 'ملابس رجالي', 'كوتشيات', 'سنيكرز', 'شنط رجالي', 'كابات', 'شربات', 'ملابس داخلية قطن', 'تسوق اونلاين مصر'],
+  metadataBase: new URL('https://zeko.ebnywep.com'),
+  title: 'زيكو ستور | ZeKo Store - برند الغلابة (السوق مش نايم.. انت اللي نايم)',
+  description: 'المتجر الرسمي لـ زيكو ستور (ZeKo Store) - برند الغلابة. أحدث صيحات الموضة الرجالي، هوديز، سنيكرز ماستر كواليتي، شنط كروس، كابات، وجوارب قطن 100%. فروعنا بالسويس وشحن ومعاينة قبل الدفع لجميع محافظات مصر.',
+  keywords: ['زيكو ستور', 'ZeKo Store', 'السوق مش نايم انت اللي نايم', 'سيد ورد', 'برند الغلابة', 'ملابس رجالي السويس', 'سنيكرز ماستر كواليتي', 'هوديز أوفر سايز', 'تسوق اونلاين مصر'],
   manifest: '/manifest.webmanifest',
   openGraph: {
-    title: 'متجر زيكو ستور | ZeKo Store',
-    description: 'أقوى كولكشن ملابس رجالي، سنيكرز، شنط وإكسسوارات مع معاينة قبل الاستلام وشحن سريع.',
+    title: 'زيكو ستور | ZeKo Store - برند الغلابة',
+    description: 'السوق مش نايم.. انت اللي نايم 🫵🏻 أقوى كولكشن ملابس رجالي وسنيكرز مع معاينة قبل الاستلام.',
     url: 'https://zeko.ebnywep.com',
     siteName: 'ZeKo Store',
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=1200&h=630&fit=crop&q=80',
+        url: '/images/cover.jpg',
         width: 1200,
         height: 630,
-        alt: 'ZeKo Store Fashion Collection',
+        alt: 'ZeKo Store - What Men Need',
       },
     ],
     locale: 'ar_EG',
@@ -36,13 +37,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'متجر زيكو ستور | ZeKo Store',
-    description: 'أقوى كولكشن ملابس رجالي وسنيكرز في مصر.',
-    images: ['https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=1200&h=630&fit=crop&q=80'],
+    title: 'زيكو ستور | ZeKo Store - برند الغلابة',
+    description: 'السوق مش نايم.. انت اللي نايم 🫵🏻 أقوى كولكشن ملابس وسنيكرز.',
+    images: ['/images/cover.jpg'],
   },
   icons: {
-    icon: '/icons/icon-192.png',
-    apple: '/icons/icon-192.png',
+    icon: '/images/logo.jpg',
+    apple: '/images/logo.jpg',
   },
 };
 
@@ -58,7 +59,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+      <body className="bg-[#f4f4f5] text-zinc-900 dark:bg-[#121214] dark:text-zinc-100 font-sans antialiased selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-zinc-900">
         {children}
         <PWAInstallPrompt />
       </body>

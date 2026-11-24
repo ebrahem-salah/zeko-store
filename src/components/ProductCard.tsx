@@ -1,20 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
-import { ShoppingBag, Star, Zap, Eye, Check, MessageSquare } from 'lucide-react';
+import { ShoppingBag, Star, Eye, Check, MessageSquare } from 'lucide-react';
 import { IProduct, getSingleProductWhatsAppLink } from '@/lib/storeHelpers';
 
 interface ProductCardProps {
   product: IProduct;
   onAddToCart: (product: IProduct, size: string, color: string) => void;
   onQuickView: (product: IProduct) => void;
+  storePhone?: string;
 }
 
 export default function ProductCard({
   product,
   onAddToCart,
   onQuickView,
+  storePhone = '201070091692',
 }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] || 'Standard');
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || '');
@@ -32,17 +33,17 @@ export default function ProductCard({
   };
 
   const whatsappLink = getSingleProductWhatsAppLink(
-    '201096986091',
+    storePhone,
     product,
     selectedSize,
     selectedColor
   );
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between group">
+    <div className="bg-white dark:bg-zinc-900/90 rounded-3xl border border-zinc-200/90 dark:border-zinc-800/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-zinc-400 dark:hover:border-zinc-600 transition-all duration-300 flex flex-col justify-between group">
       
       {/* Image & Badges */}
-      <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
+      <div className="relative aspect-square overflow-hidden bg-zinc-100 dark:bg-zinc-800/60">
         <img
           src={product.images[0]}
           alt={product.title}
@@ -58,12 +59,12 @@ export default function ProductCard({
             </span>
           )}
           {product.bestseller && (
-            <span className="px-2.5 py-1 rounded-xl bg-amber-500 text-slate-950 text-[10px] font-black shadow-md flex items-center gap-1">
+            <span className="px-2.5 py-1 rounded-xl bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-950 text-[10px] font-black shadow-md flex items-center gap-1 border border-zinc-700 dark:border-zinc-300">
               <span>🔥</span> الأكثر طلباً
             </span>
           )}
           {product.newArrival && (
-            <span className="px-2.5 py-1 rounded-xl bg-blue-600 text-white text-[10px] font-bold shadow-md">
+            <span className="px-2.5 py-1 rounded-xl bg-zinc-800 text-zinc-100 text-[10px] font-bold shadow-md">
               وصل حديثاً ✨
             </span>
           )}
@@ -72,7 +73,7 @@ export default function ProductCard({
         {/* Quick View Floating Button */}
         <button
           onClick={() => onQuickView(product)}
-          className="absolute top-3 left-3 w-9 h-9 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 hover:text-amber-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+          className="absolute top-3 left-3 w-9 h-9 rounded-xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-zinc-700 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
           title="معاينة سريعة"
         >
           <Eye className="w-4 h-4" />
@@ -89,12 +90,12 @@ export default function ProductCard({
         <div>
           {/* Category & Rating */}
           <div className="flex items-center justify-between text-xs mb-2">
-            <span className="text-amber-600 dark:text-amber-400 font-bold text-[11px]">
+            <span className="text-zinc-500 dark:text-zinc-400 font-bold text-[11px]">
               {product.categoryAr}
             </span>
-            <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-[11px]">
+            <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 text-[11px]">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-bold">{product.rating}</span>
+              <span className="font-bold text-zinc-900 dark:text-zinc-200">{product.rating}</span>
               <span>({product.reviewsCount})</span>
             </div>
           </div>
@@ -102,7 +103,7 @@ export default function ProductCard({
           {/* Title */}
           <h3
             onClick={() => onQuickView(product)}
-            className="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-2 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer transition-colors leading-snug mb-3"
+            className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white line-clamp-2 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer transition-colors leading-snug mb-3"
           >
             {product.title}
           </h3>
@@ -110,17 +111,17 @@ export default function ProductCard({
           {/* Size Selector */}
           {product.sizes.length > 0 && (
             <div className="mb-3">
-              <span className="text-[11px] text-slate-400 block mb-1">المقاس:</span>
+              <span className="text-[11px] text-zinc-400 block mb-1">المقاس:</span>
               <div className="flex flex-wrap gap-1.5">
                 {product.sizes.map((s) => (
                   <button
                     key={s}
                     type="button"
                     onClick={() => setSelectedSize(s)}
-                    className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                       selectedSize === s
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                        ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-xs'
+                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                     }`}
                   >
                     {s}
@@ -133,7 +134,7 @@ export default function ProductCard({
           {/* Color Selector */}
           {product.colors.length > 0 && (
             <div className="mb-4 flex items-center gap-2">
-              <span className="text-[11px] text-slate-400">اللون:</span>
+              <span className="text-[11px] text-zinc-400">اللون:</span>
               <div className="flex items-center gap-1.5">
                 {product.colors.map((c) => (
                   <button
@@ -141,43 +142,43 @@ export default function ProductCard({
                     type="button"
                     onClick={() => setSelectedColor(c.name)}
                     style={{ backgroundColor: c.hex }}
-                    className={`w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700 transition-transform ${
-                      selectedColor === c.name ? 'ring-2 ring-amber-500 scale-125' : 'opacity-80'
+                    className={`w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 transition-transform ${
+                      selectedColor === c.name ? 'ring-2 ring-zinc-900 dark:ring-zinc-100 scale-125' : 'opacity-80'
                     }`}
                     title={c.name}
                   />
                 ))}
-                <span className="text-[10px] text-slate-500 font-medium mr-1">{selectedColor}</span>
+                <span className="text-[10px] text-zinc-500 font-medium mr-1">{selectedColor}</span>
               </div>
             </div>
           )}
         </div>
 
         {/* Pricing & Actions */}
-        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+        <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80 space-y-2.5">
           <div className="flex items-baseline justify-between">
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-black text-slate-900 dark:text-white">
-                {product.price} <span className="text-xs font-bold text-amber-600">ج.م</span>
+              <span className="text-lg font-black text-zinc-900 dark:text-white">
+                {product.price} <span className="text-xs font-bold text-zinc-500">ج.م</span>
               </span>
               {product.oldPrice && product.oldPrice > product.price && (
-                <span className="text-xs text-slate-400 line-through">
+                <span className="text-xs text-zinc-400 line-through">
                   {product.oldPrice} ج.م
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
-              متوفر فوري ⚡
+            <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-700">
+              معاينة قبل الدفع ⚡
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={handleAdd}
-              className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 added
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white active:scale-95'
+                  : 'bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-950 active:scale-95 shadow-xs'
               }`}
             >
               {added ? (
