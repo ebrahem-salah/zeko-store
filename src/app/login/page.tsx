@@ -55,7 +55,7 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
           <div className="w-12 h-12 rounded-2xl overflow-hidden border border-zinc-800 shadow-md group-hover:scale-105 transition-transform bg-white">
-            <img src="/images/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+            <img src="/images/logo.webp" alt="Logo" className="w-full h-full object-cover" />
           </div>
           <div className="text-right">
             <span className="font-black text-xl text-white block">زيكو ستور</span>

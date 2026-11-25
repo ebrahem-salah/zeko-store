@@ -61,36 +61,39 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link href="/" className="inline-flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
-            <ShieldCheck className="w-6 h-6" />
+        <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
+          <div className="w-12 h-12 rounded-2xl overflow-hidden border border-zinc-800 shadow-md group-hover:scale-105 transition-transform bg-white">
+            <img src="/images/logo.webp" alt="Logo" className="w-full h-full object-cover" />
           </div>
-          <span className="font-black text-xl text-slate-900">Next.js SaaS</span>
+          <div className="text-right">
+            <span className="font-black text-xl text-white block">زيكو ستور</span>
+            <span className="text-[10px] text-zinc-400 font-bold">برند الغلابة • السويس</span>
+          </div>
         </Link>
-        <h2 className="text-2xl font-black text-slate-900">إنشاء حساب جديد</h2>
-        <p className="mt-1 text-xs text-slate-500">
+        <h2 className="text-2xl font-black text-white">إنشاء حساب جديد</h2>
+        <p className="mt-1 text-xs text-zinc-400">
           لديك حساب بالفعل؟{' '}
-          <Link href="/login" className="font-bold text-blue-600 hover:text-blue-500">
+          <Link href="/login" className="font-bold text-zinc-200 underline hover:text-white">
             تسجيل الدخول
           </Link>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-200/50 rounded-3xl border border-slate-200 sm:px-10">
+        <div className="bg-zinc-900/90 backdrop-blur-md py-8 px-6 shadow-2xl rounded-3xl border border-zinc-800 sm:px-10">
           
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
+            <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2">
+            <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{success}</span>
             </div>
@@ -101,100 +104,108 @@ export default function SignupPage() {
             {/* First and Last Name */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">الاسم الأول *</label>
+                <label className="block text-xs font-bold text-zinc-300 mb-1">الاسم الأول *</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5" />
+                  <User className="w-4 h-4 text-zinc-500 absolute right-3.5 top-3.5" />
                   <input
                     type="text"
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="محمد"
-                    className="w-full pr-10 pl-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pr-10 pl-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">الاسم الأخير *</label>
+                <label className="block text-xs font-bold text-zinc-300 mb-1">الاسم الأخير *</label>
                 <input
                   type="text"
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="صلاح"
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني *</label>
+              <label className="block text-xs font-bold text-zinc-300 mb-1">البريد الإلكتروني *</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5" />
+                <Mail className="w-4 h-4 text-zinc-500 absolute right-3.5 top-3.5" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pr-10 pl-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pr-10 pl-3 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">كلمة المرور *</label>
+              <label className="block text-xs font-bold text-zinc-300 mb-1">كلمة المرور *</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5" />
+                <Lock className="w-4 h-4 text-zinc-500 absolute right-3.5 top-3.5" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pr-10 pl-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pr-10 pl-10 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-3 top-3 text-slate-400 hover:text-slate-600"
+                  className="absolute left-3 top-3 text-zinc-500 hover:text-zinc-300 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
 
               {/* Password criteria checklist */}
-              <div className="mt-2.5 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-[11px] space-y-1">
-                <div className={`flex items-center gap-1.5 ${hasMinLength ? 'text-emerald-600 font-bold' : 'text-slate-400'}`}>
+              <div className="mt-2.5 p-2.5 bg-zinc-950 rounded-xl border border-zinc-800 text-[11px] space-y-1">
+                <div className={`flex items-center gap-1.5 ${hasMinLength ? 'text-emerald-400 font-bold' : 'text-zinc-500'}`}>
                   <Check className="w-3.5 h-3.5" />
                   <span>8 أحرف على الأقل</span>
                 </div>
-                <div className={`flex items-center gap-1.5 ${hasUppercase ? 'text-emerald-600 font-bold' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-1.5 ${hasUppercase ? 'text-emerald-400 font-bold' : 'text-zinc-500'}`}>
                   <Check className="w-3.5 h-3.5" />
                   <span>حرف كبير واحد على الأقل (A-Z)</span>
                 </div>
-                <div className={`flex items-center gap-1.5 ${hasNumber ? 'text-emerald-600 font-bold' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-1.5 ${hasNumber ? 'text-emerald-400 font-bold' : 'text-zinc-500'}`}>
                   <Check className="w-3.5 h-3.5" />
                   <span>رقم واحد على الأقل (0-9)</span>
                 </div>
-                <div className={`flex items-center gap-1.5 ${hasSpecial ? 'text-emerald-600 font-bold' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-1.5 ${hasSpecial ? 'text-emerald-400 font-bold' : 'text-zinc-500'}`}>
                   <Check className="w-3.5 h-3.5" />
                   <span>رمز خاص واحد على الأقل (!@#$...)</span>
                 </div>
               </div>
             </div>
 
+            {/* Terms acceptance link */}
+            <p className="text-[11px] text-zinc-400 leading-relaxed pt-1">
+              بإنشاء حسابك فإنك توافق على{' '}
+              <Link href="/terms" className="text-zinc-200 underline hover:text-white">الشروط والأحكام</Link>
+              {' '}و{' '}
+              <Link href="/privacy" className="text-zinc-200 underline hover:text-white">سياسة الخصوصية</Link>.
+            </p>
+
             {/* Submit */}
             <button
               type="submit"
               disabled={loading || !isPasswordValid}
-              className={`w-full font-bold py-3 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 mt-4 ${
+              className={`w-full font-black py-3 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer ${
                 isPasswordValid
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  ? 'bg-zinc-100 hover:bg-white text-zinc-950 shadow-white/10'
+                  : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
               }`}
             >
               <span>{loading ? 'جاري الإنشاء...' : 'إنشاء الحساب الآن'}</span>

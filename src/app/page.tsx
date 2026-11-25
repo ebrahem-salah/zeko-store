@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import {
   ShoppingBag,
@@ -17,7 +18,9 @@ import {
   MapPin,
   ExternalLink,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  User,
+  Shield
 } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import CartDrawer from '@/components/CartDrawer';
@@ -71,6 +74,21 @@ export default function HomePage() {
 
   // Mobile menu
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Current logged in user (Customer or Admin)
+  const [currentUser, setCurrentUser] = useState<{ name: string; role: string } | null>(null);
+
+  // Check Auth State on mount
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Load cart from localStorage
   useEffect(() => {
@@ -262,6 +280,38 @@ export default function HomePage() {
 
               {/* Theme Toggle Button */}
               <ThemeToggle />
+
+              {/* User / Admin / Login Button */}
+              {currentUser ? (
+                ['admin', 'manager'].includes(currentUser.role) ? (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 font-bold text-xs shadow-sm hover:opacity-90 transition"
+                    title="الدخول إلى لوحة تحكم الإدارة والمخازن"
+                  >
+                    <Shield className="w-3.5 h-3.5 text-amber-400 dark:text-amber-600" />
+                    <span>لوحة الإدارة</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                    title="حسابي والطلبات"
+                  >
+                    <User className="w-3.5 h-3.5 text-zinc-500" />
+                    <span className="hidden sm:inline max-w-[80px] truncate">{currentUser.name || 'حسابي'}</span>
+                  </Link>
+                )
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-bold transition"
+                  title="تسجيل الدخول / لوحة الإدارة"
+                >
+                  <User className="w-3.5 h-3.5 text-zinc-400" />
+                  <span className="hidden sm:inline">دخول</span>
+                </Link>
+              )}
 
               {/* Cart Drawer Trigger */}
               <button
@@ -561,20 +611,20 @@ export default function HomePage() {
       <footer className="bg-zinc-950 text-zinc-400 pt-12 pb-8 border-t border-zinc-900 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Store Bio */}
-            <div className="space-y-3 md:col-span-2">
+            <div className="space-y-3">
               <div className="flex items-center gap-2.5 text-white">
                 <div className="w-9 h-9 rounded-xl overflow-hidden border border-zinc-800 bg-white">
-                  <img src="/images/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+                  <img src="/images/logo.webp" alt="Logo" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <span className="font-black text-base block">زيكو ستور | ZeKo Store</span>
                   <span className="text-[10px] text-zinc-500">برند الغلابة • السوق مش نايم انت الي نايم 🫵🏻</span>
                 </div>
               </div>
-              <p className="text-zinc-400 leading-relaxed max-w-md">
-                براند أزياء شبابي مصري يقدم أرقى كولكشن ملابس رجالي، أحذية وسنيكرز ماستر كواليتي، شنط، كابات، جوارب وملابس داخلية قطنية 100%. نهتم بأدق تفاصيل الجودة والخامة، مع توفير تجربة شراء مضمونة مع استبدال واسترجاع في نفس اليوم.
+              <p className="text-zinc-400 leading-relaxed">
+                براند أزياء شبابي مصري يقدم أرقى كولكشن ملابس رجالي، أحذية وسنيكرز ماستر كواليتي، شنط، كابات، جوارب وملابس داخلية قطنية 100%. خامات فاخرة مع استبدال واسترجاع في نفس اليوم.
               </p>
               <div className="flex items-center gap-2 pt-1">
                 <a
@@ -583,10 +633,41 @@ export default function HomePage() {
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-semibold flex items-center gap-1.5"
                 >
-                  <span>صفحة الفيسبوك الرسمية (81K متابع)</span>
+                  <span>صفحة الفيسبوك (81K)</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
+            </div>
+
+            {/* Important Pages & Policy Links */}
+            <div className="space-y-2">
+              <h4 className="text-white font-bold text-sm">عن المتجر والسياسات</h4>
+              <ul className="space-y-2 text-zinc-400">
+                <li>
+                  <Link href="/about" className="hover:text-white transition flex items-center gap-1.5">
+                    <span>←</span>
+                    <span>من نحن (قصة زيكو ستور)</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white transition flex items-center gap-1.5">
+                    <span>←</span>
+                    <span>سياسة الخصوصية وحماية البيانات</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-white transition flex items-center gap-1.5">
+                    <span>←</span>
+                    <span>الشروط وسياسة الاستبدال في نفس اليوم</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/login" className="hover:text-white transition flex items-center gap-1.5 font-bold text-zinc-300">
+                    <span>←</span>
+                    <span>تسجيل الدخول / لوحة الإدارة</span>
+                  </Link>
+                </li>
+              </ul>
             </div>
 
             {/* Branches list */}

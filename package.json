@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "google-auth-library": "^9.15.1",
+    "jose": "^6.2.18",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^1.73.0",
     "mongoose": "^8.9.5",
