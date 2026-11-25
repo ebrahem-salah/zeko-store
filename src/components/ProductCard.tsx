@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingBag, Star, Eye, Check, MessageSquare } from 'lucide-react';
+import { ShoppingBag, Star, Eye, Check, MessageSquare, MapPin } from 'lucide-react';
 import { IProduct, getSingleProductWhatsAppLink } from '@/lib/storeHelpers';
 
 interface ProductCardProps {
@@ -103,10 +103,24 @@ export default function ProductCard({
           {/* Title */}
           <h3
             onClick={() => onQuickView(product)}
-            className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white line-clamp-2 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer transition-colors leading-snug mb-3"
+            className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white line-clamp-2 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer transition-colors leading-snug mb-2"
           >
             {product.title}
           </h3>
+
+          {/* Product Location & Available Branches */}
+          <div className="flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400 py-1 px-2.5 rounded-xl bg-zinc-100/80 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800 mb-3">
+            <MapPin className="w-3 h-3 text-emerald-500 shrink-0" />
+            <span className="truncate">
+              متوفر في: <strong className="text-zinc-800 dark:text-zinc-200 font-bold">
+                {product.availableBranches && product.availableBranches.length > 0
+                  ? product.availableBranches.join(' • ')
+                  : product.warehouseStock && product.warehouseStock.length > 0
+                  ? product.warehouseStock.filter((w) => w.quantity > 0).map((w) => w.warehouseName.replace('فرع ', '')).slice(0, 3).join(' • ')
+                  : 'الكورنيش • الرخاوي • ميني زيكو'}
+              </strong>
+            </span>
+          </div>
 
           {/* Size Selector */}
           {product.sizes.length > 0 && (

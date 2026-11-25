@@ -104,7 +104,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, title, price, oldPrice, inStock, featured, bestseller, totalStock } = body;
+    const { id, title, price, oldPrice, inStock, featured, bestseller, totalStock, primaryLocation, shelfLocation, availableBranches, warehouseStock } = body;
 
     if (!id) {
       return NextResponse.json({ success: false, message: 'معرف المنتج مطلوب.' }, { status: 400 });
@@ -120,6 +120,10 @@ export async function PATCH(req: Request) {
     if (typeof featured === 'boolean') updateData.featured = featured;
     if (typeof bestseller === 'boolean') updateData.bestseller = bestseller;
     if (totalStock !== undefined) updateData.totalStock = Number(totalStock);
+    if (primaryLocation) updateData.primaryLocation = primaryLocation.trim();
+    if (shelfLocation) updateData.shelfLocation = shelfLocation.trim();
+    if (Array.isArray(availableBranches)) updateData.availableBranches = availableBranches;
+    if (Array.isArray(warehouseStock)) updateData.warehouseStock = warehouseStock;
 
     const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
     if (!product) {

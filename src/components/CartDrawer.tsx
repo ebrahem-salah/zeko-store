@@ -57,6 +57,8 @@ export default function CartDrawer({
   const [city, setCity] = useState('السويس');
   const [address, setAddress] = useState('');
   const [notes, setNotes] = useState('');
+  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup'>('delivery');
+  const [pickupBranch, setPickupBranch] = useState('فرع الكورنيش القديم (الرئيسي)');
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
@@ -66,8 +68,8 @@ export default function CartDrawer({
   const STANDARD_SHIPPING = 50;
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
-  const shipping = items.length === 0 ? 0 : isFreeShipping ? 0 : STANDARD_SHIPPING;
+  const isFreeShipping = deliveryMethod === 'pickup' || subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shipping = items.length === 0 || deliveryMethod === 'pickup' ? 0 : isFreeShipping ? 0 : STANDARD_SHIPPING;
   const total = subtotal + shipping;
 
   const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
@@ -75,17 +77,21 @@ export default function CartDrawer({
 
   const handleCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim() || !phone.trim() || !address.trim()) {
+    if (!customerName.trim() || !phone.trim() || (deliveryMethod === 'delivery' && !address.trim())) {
       alert('من فضلك أكمل بيانات الاسم ورقم الهاتف والعنوان لتأكيد الطلب');
       return;
     }
 
+    const finalAddress = deliveryMethod === 'pickup' ? `استلام من فرع السويس: ${pickupBranch}` : address.trim();
+    const finalCity = deliveryMethod === 'pickup' ? 'السويس (استلام من الفرع)' : city;
+    const finalNotes = deliveryMethod === 'pickup' ? `[طلب استلام مباشر من: ${pickupBranch}] ${notes.trim()}` : notes.trim();
+
     const orderData: ICustomerOrder = {
       customerName: customerName.trim(),
       phone: phone.trim(),
-      city,
-      address: address.trim(),
-      notes: notes.trim(),
+      city: finalCity,
+      address: finalAddress,
+      notes: finalNotes,
       items: items.map(it => ({
         productTitle: it.product.title,
         productCode: it.product.code,
@@ -274,6 +280,56 @@ export default function CartDrawer({
                   </div>
 
                   <div>
+                    <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">
+                      طريقة الاستلام المفضلة
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryMethod('delivery')}
+                        className={`p-2.5 rounded-xl text-xs font-bold border transition text-center cursor-pointer ${
+                          deliveryMethod === 'delivery'
+                            ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 border-transparent shadow-xs'
+                            : 'bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
+                        }`}
+                      >
+                        🚚 توصيل للمنزل
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryMethod('pickup')}
+                        className={`p-2.5 rounded-xl text-xs font-bold border transition text-center cursor-pointer ${
+                          deliveryMethod === 'pickup'
+                            ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 border-transparent shadow-xs'
+                            : 'bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
+                        }`}
+                      >
+                        🏬 استلام من الفرع
+                      </button>
+                    </div>
+                  </div>
+
+                  {deliveryMethod === 'pickup' && (
+                    <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 space-y-1.5 animate-in fade-in">
+                      <label className="block text-[11px] font-bold text-zinc-800 dark:text-zinc-200">
+                        📍 حدد فرع الاستلام المفضل بالسويس:
+                      </label>
+                      <select
+                        value={pickupBranch}
+                        onChange={(e) => setPickupBranch(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 focus:outline-none text-zinc-900 dark:text-white font-bold"
+                      >
+                        <option value="فرع الكورنيش القديم (الرئيسي)">1. فرع الكورنيش القديم (الرئيسي - أمام نادي أبناء السويس)</option>
+                        <option value="فرع شارع الرخاوي">2. فرع شارع الرخاوي الجديد (بجوار محل فيونكة)</option>
+                        <option value="فرع ميني زيكو (MINI ZEKO)">3. فرع ميني زيكو (أول يمين من شارع الرخاوي الجديد)</option>
+                      </select>
+                      <p className="text-[10px] text-zinc-500 pt-0.5">
+                        سيتم تجهيز الموديل في الفرع المختار واستلامه بدون أي مصاريف شحن.
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
                     <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
                       الاسم بالكامل *
                     </label>
@@ -318,19 +374,21 @@ export default function CartDrawer({
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
-                      العنوان بالتفصيل *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="الشارع، رقم العمارة، الشقة، علامة مميزة"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 text-zinc-900 dark:text-white transition"
-                    />
-                  </div>
+                  {deliveryMethod === 'delivery' && (
+                    <div>
+                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">
+                        العنوان بالتفصيل بالسويس *
+                      </label>
+                      <input
+                        type="text"
+                        required={deliveryMethod === 'delivery'}
+                        placeholder="الشارع، رقم العمارة، الشقة، علامة مميزة"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 text-zinc-900 dark:text-white transition"
+                      />
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">

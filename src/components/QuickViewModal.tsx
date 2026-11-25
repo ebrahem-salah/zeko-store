@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Star, ShoppingBag, MessageSquare, Check, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
+import { X, Star, ShoppingBag, MessageSquare, Check, ShieldCheck, Truck, RefreshCw, MapPin, Warehouse } from 'lucide-react';
 import { IProduct, getSingleProductWhatsAppLink } from '@/lib/storeHelpers';
 
 interface QuickViewModalProps {
@@ -197,6 +197,34 @@ export default function QuickViewModal({
                   </div>
                 </div>
               )}
+              {/* Product Location & Branch Availability */}
+              <div className="mt-4 p-3 rounded-2xl bg-zinc-100/70 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-800 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>مكان توافر الموديل بالسويس:</span>
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-mono">
+                    {product.shelfLocation ? `كود الرف: ${product.shelfLocation}` : 'متاح بالمعاينة الفورية'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                  {[
+                    { name: 'فرع الكورنيش القديم', status: 'متاح للاستلام الفوري' },
+                    { name: 'فرع شارع الرخاوي', status: 'متاح للاستلام الفوري' },
+                    { name: 'فرع ميني زيكو', status: 'متاح للاستلام الفوري' },
+                    { name: 'المخزن المركزي الرئيسي', status: 'توصيل فوري لباب بيتك' },
+                  ].map((loc, idx) => (
+                    <div key={idx} className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                      <div className="truncate">
+                        <span className="font-bold text-zinc-900 dark:text-zinc-100 block truncate">{loc.name}</span>
+                        <span className="text-[9px] text-zinc-500 block truncate">{loc.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Actions */}

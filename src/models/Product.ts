@@ -4,6 +4,7 @@ export interface IWarehouseItemStock {
   warehouseCode: string;
   warehouseName: string;
   quantity: number;
+  shelfLocation?: string; // رقم الرف أو القسم، مثلاً: "الرف A-02" أو "قسم السنيكرز - ستاند 3"
 }
 
 export interface IProductDocument extends Document {
@@ -18,7 +19,10 @@ export interface IProductDocument extends Document {
   description: string;
   sizes: string[];
   colors: { name: string; hex: string }[];
+  primaryLocation?: string; // المكان الرئيسي (مثال: "المخزن المركزي" أو "فرع الكورنيش")
+  shelfLocation?: string; // رقم الرف أو كود التخزين الداخلي
   warehouseStock: IWarehouseItemStock[];
+  availableBranches?: string[]; // أسماء الفروع المتاح بها المنتج للاستلام
   totalStock: number;
   minStockAlert: number;
   inStock: boolean;
@@ -54,11 +58,15 @@ const ProductSchema: Schema = new Schema(
         hex: { type: String, required: true },
       },
     ],
+    primaryLocation: { type: String, default: 'المخزن المركزي' },
+    shelfLocation: { type: String, default: 'الرف A-01' },
+    availableBranches: [{ type: String }],
     warehouseStock: [
       {
         warehouseCode: { type: String, required: true },
         warehouseName: { type: String, required: true },
         quantity: { type: Number, default: 10 },
+        shelfLocation: { type: String, default: 'الرف A-01' },
       },
     ],
     totalStock: { type: Number, default: 40 },

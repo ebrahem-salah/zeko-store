@@ -2,6 +2,7 @@ export interface IWarehouseItemStock {
   warehouseCode: string;
   warehouseName: string;
   quantity: number;
+  shelfLocation?: string;
 }
 
 export interface IProduct {
@@ -17,6 +18,9 @@ export interface IProduct {
   description: string;
   sizes: string[];
   colors: { name: string; hex: string }[];
+  primaryLocation?: string;
+  shelfLocation?: string;
+  availableBranches?: string[];
   warehouseStock?: IWarehouseItemStock[];
   totalStock?: number;
   inStock: boolean;

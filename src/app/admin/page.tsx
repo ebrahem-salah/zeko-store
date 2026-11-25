@@ -100,7 +100,10 @@ interface IAdminProduct {
   oldPrice?: number;
   images: string[];
   totalStock?: number;
-  warehouseStock?: { warehouseCode: string; warehouseName: string; quantity: number }[];
+  primaryLocation?: string;
+  shelfLocation?: string;
+  availableBranches?: string[];
+  warehouseStock?: { warehouseCode: string; warehouseName: string; quantity: number; shelfLocation?: string }[];
   inStock: boolean;
   featured?: boolean;
   bestseller?: boolean;
@@ -261,6 +264,8 @@ export default function AdminPage() {
     price: 0,
     oldPrice: 0,
     totalStock: 0,
+    primaryLocation: 'المخزن المركزي',
+    shelfLocation: 'الرف A-01',
     inStock: true,
     featured: false,
     bestseller: false,
@@ -584,6 +589,8 @@ export default function AdminPage() {
           price: productForm.price,
           oldPrice: productForm.oldPrice,
           totalStock: productForm.totalStock,
+          primaryLocation: productForm.primaryLocation,
+          shelfLocation: productForm.shelfLocation,
           inStock: productForm.inStock,
           featured: productForm.featured,
           bestseller: productForm.bestseller,
@@ -1523,6 +1530,7 @@ export default function AdminPage() {
                       <th className="py-3 px-4">كود الموديل</th>
                       <th className="py-3 px-4">اسم المنتج</th>
                       <th className="py-3 px-4">الفئة</th>
+                      <th className="py-3 px-4">مكان التخزين والرف</th>
                       <th className="py-3 px-4">السعر الحالي</th>
                       <th className="py-3 px-4">قبل الخصم</th>
                       <th className="py-3 px-4">إجمالي الرصيد</th>
@@ -1545,6 +1553,17 @@ export default function AdminPage() {
                         <td className="py-2.5 px-4 font-mono font-bold text-zinc-300">{p.code}</td>
                         <td className="py-2.5 px-4 font-bold text-white max-w-[240px] truncate">{p.title}</td>
                         <td className="py-2.5 px-4 text-zinc-400">{p.categoryAr || p.category}</td>
+                        <td className="py-2.5 px-4">
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold text-zinc-200 text-xs flex items-center gap-1">
+                              <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                              <span>{p.primaryLocation || 'المخزن المركزي'}</span>
+                            </span>
+                            <span className="font-mono text-[10px] text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-800 w-fit">
+                              {p.shelfLocation || 'الرف A-01'}
+                            </span>
+                          </div>
+                        </td>
                         <td className="py-2.5 px-4 font-black font-mono text-zinc-100">{p.price} ج.م</td>
                         <td className="py-2.5 px-4 font-mono text-zinc-500 line-through">
                           {p.oldPrice ? `${p.oldPrice} ج.م` : '-'}
@@ -1571,6 +1590,8 @@ export default function AdminPage() {
                                 price: p.price,
                                 oldPrice: p.oldPrice || 0,
                                 totalStock: p.totalStock ?? 30,
+                                primaryLocation: p.primaryLocation || 'المخزن المركزي',
+                                shelfLocation: p.shelfLocation || 'الرف A-01',
                                 inStock: p.inStock,
                                 featured: !!p.featured,
                                 bestseller: !!p.bestseller,
@@ -1578,7 +1599,7 @@ export default function AdminPage() {
                               setEditProductModalOpen(true);
                             }}
                             className="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition cursor-pointer"
-                            title="تعديل السعر والمخزون"
+                            title="تعديل السعر والمخزون ومكان التخزين"
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
@@ -2537,6 +2558,32 @@ export default function AdminPage() {
                   onChange={(e) => setProductForm({ ...productForm, totalStock: Number(e.target.value) })}
                   className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-white font-mono font-bold"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-zinc-300 mb-1">المكان الرئيسي (الفرع / المخزن)</label>
+                  <select
+                    value={productForm.primaryLocation}
+                    onChange={(e) => setProductForm({ ...productForm, primaryLocation: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-white font-bold"
+                  >
+                    <option value="المخزن المركزي">المخزن المركزي الرئيسي</option>
+                    <option value="فرع الكورنيش القديم">فرع الكورنيش القديم</option>
+                    <option value="فرع شارع الرخاوي">فرع شارع الرخاوي</option>
+                    <option value="فرع ميني زيكو">فرع ميني زيكو</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-zinc-300 mb-1">رقم الرف / كود التخزين</label>
+                  <input
+                    type="text"
+                    value={productForm.shelfLocation}
+                    onChange={(e) => setProductForm({ ...productForm, shelfLocation: e.target.value })}
+                    placeholder="الرف A-04"
+                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-white font-mono font-bold"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-zinc-800">
