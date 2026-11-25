@@ -64,6 +64,10 @@ export async function POST(req: Request) {
 
     const slug = title.toLowerCase().replace(/[^a-z0-9\u0621-\u064A]+/g, '-') + `-${Date.now().toString().slice(-4)}`;
 
+    const sanitizedImages = Array.isArray(images) && images.length > 0
+      ? images.slice(0, 3)
+      : ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80'];
+
     const product = await Product.create({
       code: code.trim(),
       title: title.trim(),
@@ -72,7 +76,7 @@ export async function POST(req: Request) {
       categoryAr: categoryAr || 'أزياء رجالي',
       price: Number(price),
       oldPrice: oldPrice ? Number(oldPrice) : 0,
-      images: Array.isArray(images) && images.length ? images : ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80'],
+      images: sanitizedImages,
       description: description || 'منتج عالي الجودة من زيكو ستور.',
       sizes: Array.isArray(sizes) ? sizes : ['M', 'L', 'XL'],
       colors: Array.isArray(colors) ? colors : [{ name: 'أسود', hex: '#18181b' }],
@@ -104,7 +108,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, title, price, oldPrice, inStock, featured, bestseller, totalStock, primaryLocation, shelfLocation, availableBranches, warehouseStock } = body;
+    const { id, title, price, oldPrice, inStock, featured, bestseller, totalStock, primaryLocation, shelfLocation, availableBranches, warehouseStock, images } = body;
 
     if (!id) {
       return NextResponse.json({ success: false, message: 'معرف المنتج مطلوب.' }, { status: 400 });
@@ -124,6 +128,15 @@ export async function PATCH(req: Request) {
     if (shelfLocation) updateData.shelfLocation = shelfLocation.trim();
     if (Array.isArray(availableBranches)) updateData.availableBranches = availableBranches;
     if (Array.isArray(warehouseStock)) updateData.warehouseStock = warehouseStock;
+    if (Array.isArray(images)) {
+      if (images.length === 0) {
+        return NextResponse.json({ success: false, message: 'يجب أن يحتوي المنتج على صورة واحدة على الأقل.' }, { status: 400 });
+      }
+      if (images.length > 3) {
+        return NextResponse.json({ success: false, message: 'الحد الأقصى المسموح به هو 3 صور فقط لكل منتج.' }, { status: 400 });
+      }
+      updateData.images = images.slice(0, 3);
+    }
 
     const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
     if (!product) {

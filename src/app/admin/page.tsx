@@ -46,7 +46,10 @@ import {
   Banknote,
   Factory,
   Briefcase,
-  UserPlus
+  UserPlus,
+  Upload,
+  Image as ImageIcon,
+  Camera
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -373,7 +376,9 @@ export default function AdminPage() {
     inStock: true,
     featured: false,
     bestseller: false,
+    images: [] as string[],
   });
+  const [uploadingProductImage, setUploadingProductImage] = useState(false);
   const [productSubmitting, setProductSubmitting] = useState(false);
 
   // 7. Employee Modal (Add / Edit)
@@ -806,7 +811,65 @@ export default function AdminPage() {
     }
   };
 
-  // Update Product Price / Stock / Location
+  // Product Image Upload Handler (Strict WebP & 5MB limit, Max 3 images)
+  const handleProductImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (productForm.images.length >= 3) {
+      showToast('الحد الأقصى للصور هو 3 صور فقط لكل منتج.', 'error');
+      return;
+    }
+
+    if (file.type.startsWith('video/') || !['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
+      showToast('ممنوع رفع الفيديوهات أو الملفات. مسموح بالصور فقط (JPG, PNG, WebP).', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('حجم الصورة كبير جداً (أكثر من 5MB). يرجى اختيار صورة أصغر لحماية موارد السيرفر.', 'error');
+      return;
+    }
+
+    setUploadingProductImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setProductForm(prev => ({
+          ...prev,
+          images: [...prev.images, data.url].slice(0, 3),
+        }));
+        showToast('تم رفع الصورة وتحويلها تلقائياً إلى صيغة WebP فائقة الخفة بنجاح! ✨');
+      } else {
+        showToast(data.message || 'فشل رفع الصورة', 'error');
+      }
+    } catch (err) {
+      showToast('خطأ في الاتصال بالخادم أثناء رفع الصورة', 'error');
+    } finally {
+      setUploadingProductImage(false);
+      e.target.value = '';
+    }
+  };
+
+  // Remove one of the product images (preserves at least 1 image)
+  const handleRemoveProductImage = (indexToRemove: number) => {
+    if (productForm.images.length <= 1) {
+      showToast('يجب أن يحتوي المنتج على صورة واحدة على الأقل.', 'error');
+      return;
+    }
+    setProductForm(prev => ({
+      ...prev,
+      images: prev.images.filter((_, idx) => idx !== indexToRemove),
+    }));
+  };
+
+  // Update Product Price / Stock / Location / Images
   const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProduct) return;
@@ -825,11 +888,12 @@ export default function AdminPage() {
           inStock: productForm.inStock,
           featured: productForm.featured,
           bestseller: productForm.bestseller,
+          images: productForm.images.slice(0, 3),
         }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast('تم تحديث بيانات المنتج ومكان التخزين بنجاح');
+        showToast('تم تحديث بيانات المنتج وصوره ومكان التخزين بنجاح');
         setEditProductModalOpen(false);
         setEditingProduct(null);
         fetchProducts();
@@ -2466,12 +2530,17 @@ export default function AdminPage() {
                     {filteredProducts.map((p) => (
                       <tr key={p._id} className="hover:bg-zinc-800/40 transition">
                         <td className="py-2.5 px-4">
-                          <div className="w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700">
+                          <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700 group">
                             <img
                               src={p.images?.[0] || 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=100'}
                               alt={p.title}
                               className="w-full h-full object-cover"
                             />
+                            {p.images && p.images.length > 1 && (
+                              <span className="absolute bottom-0 left-0 right-0 bg-black/85 text-[8px] font-mono text-center text-zinc-300 font-bold py-0.2">
+                                {p.images.length} صور
+                              </span>
+                            )}
                           </div>
                         </td>
                         <td className="py-2.5 px-4 font-mono font-bold text-zinc-300">{p.code}</td>
@@ -2519,6 +2588,7 @@ export default function AdminPage() {
                                 inStock: p.inStock,
                                 featured: !!p.featured,
                                 bestseller: !!p.bestseller,
+                                images: Array.isArray(p.images) && p.images.length ? [...p.images].slice(0, 3) : [],
                               });
                               setEditProductModalOpen(true);
                             }}
@@ -3762,10 +3832,10 @@ export default function AdminPage() {
       ======================================================== */}
       {editProductModalOpen && editingProduct && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-md w-full p-6 space-y-5 animate-in fade-in zoom-in-95">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
               <div>
-                <h3 className="font-black text-sm text-white">تعديل بيانات المنتج ومكان التخزين</h3>
+                <h3 className="font-black text-sm text-white">تعديل بيانات المنتج وصوره ومكان التخزين</h3>
                 <span className="text-[11px] text-zinc-400 font-bold">{editingProduct.title}</span>
               </div>
               <button onClick={() => setEditProductModalOpen(false)} className="text-zinc-400 hover:text-white cursor-pointer">
@@ -3774,6 +3844,80 @@ export default function AdminPage() {
             </div>
 
             <form onSubmit={handleUpdateProduct} className="space-y-4 text-xs">
+              {/* Product Images Manager (1 to 3 images max + WebP conversion) */}
+              <div className="p-3.5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-zinc-300" />
+                    <span className="font-bold text-white">صور المنتج (1 إلى 3 صور كحد أقصى)</span>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold ${
+                    productForm.images.length === 3 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-zinc-800 text-zinc-300'
+                  }`}>
+                    {productForm.images.length} / 3 صور
+                  </span>
+                </div>
+
+                <div className="text-[11px] text-zinc-400 bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-800/80 leading-relaxed flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>حماية السيرفر وسرعة التصفح:</strong> مسموح برفع الصور فقط (JPG, PNG, WebP) بحجم أقصى 5MB. ممنوع رفع الفيديوهات أو المستندات، ويتم تحويل الصور المرفوعة تلقائياً إلى صيغة WebP فائقة الخفة.
+                  </span>
+                </div>
+
+                {/* Images Preview Grid */}
+                <div className="grid grid-cols-3 gap-2.5 pt-1">
+                  {productForm.images.map((imgUrl, idx) => (
+                    <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-zinc-900 border border-zinc-700 group">
+                      <img src={imgUrl} alt={`صورة ${idx + 1}`} className="w-full h-full object-cover" />
+                      
+                      {idx === 0 && (
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-zinc-950/80 text-white text-[9px] font-bold">
+                          الرئيسية ⭐
+                        </span>
+                      )}
+
+                      {productForm.images.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveProductImage(idx)}
+                          className="absolute top-1 left-1 w-6 h-6 rounded-lg bg-rose-600/90 hover:bg-rose-600 text-white flex items-center justify-center opacity-80 hover:opacity-100 transition shadow-sm cursor-pointer"
+                          title="حذف هذه الصورة"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Upload new image slot if less than 3 */}
+                  {productForm.images.length < 3 && (
+                    <label className={`relative aspect-square rounded-xl border-2 border-dashed border-zinc-700 hover:border-zinc-500 bg-zinc-900/50 hover:bg-zinc-900 flex flex-col items-center justify-center p-2 text-center transition cursor-pointer group ${
+                      uploadingProductImage ? 'opacity-50 pointer-events-none' : ''
+                    }`}>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/avif"
+                        onChange={handleProductImageUpload}
+                        disabled={uploadingProductImage}
+                        className="hidden"
+                      />
+                      {uploadingProductImage ? (
+                        <div className="flex flex-col items-center gap-1.5 text-zinc-400">
+                          <RefreshCw className="w-5 h-5 animate-spin text-zinc-200" />
+                          <span className="text-[10px] font-bold">جاري تحويل WebP...</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-1 text-zinc-400 group-hover:text-zinc-200">
+                          <Upload className="w-5 h-5 mb-0.5" />
+                          <span className="text-[11px] font-bold">إضافة صورة</span>
+                          <span className="text-[9px] text-zinc-500 font-mono">WebP تلقائي</span>
+                        </div>
+                      )}
+                    </label>
+                  )}
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-zinc-300 mb-1">السعر الحالي (ج.م)</label>

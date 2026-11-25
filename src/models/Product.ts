@@ -49,7 +49,14 @@ const ProductSchema: Schema = new Schema(
     categoryAr: { type: String, required: true },
     price: { type: Number, required: true, index: true },
     oldPrice: { type: Number, default: 0 },
-    images: [{ type: String, required: true }],
+    images: {
+      type: [{ type: String }],
+      required: true,
+      validate: [
+        (val: string[]) => Array.isArray(val) && val.length >= 1 && val.length <= 3,
+        'كل منتج يجب أن يحتوي على صورة واحدة على الأقل وبحد أقصى 3 صور فقط.',
+      ],
+    },
     description: { type: String, required: true },
     sizes: [{ type: String }],
     colors: [

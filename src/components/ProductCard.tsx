@@ -47,9 +47,30 @@ export default function ProductCard({
         <img
           src={product.images[0]}
           alt={product.title}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          className={`w-full h-full object-cover object-center transition-all duration-500 ${
+            product.images.length > 1
+              ? 'group-hover:scale-105 group-hover:opacity-0'
+              : 'group-hover:scale-105'
+          }`}
           loading="lazy"
         />
+
+        {product.images[1] && (
+          <img
+            src={product.images[1]}
+            alt={`${product.title} - صورة 2`}
+            className="w-full h-full object-cover object-center absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105"
+            loading="lazy"
+          />
+        )}
+
+        {/* Multiple images indicator badge */}
+        {product.images.length > 1 && (
+          <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs text-zinc-200 text-[10px] font-mono font-bold z-10 flex items-center gap-1">
+            <span>📷</span>
+            <span>{product.images.length} صور</span>
+          </div>
+        )}
 
         {/* Floating Badges */}
         <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">

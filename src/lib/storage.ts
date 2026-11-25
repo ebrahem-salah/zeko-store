@@ -1,6 +1,7 @@
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import sharp from 'sharp';
 
 export interface UploadResult {
   url: string;
@@ -19,7 +20,38 @@ export async function uploadFile(
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-  // 1. Cloudinary Provider (If configured in .env)
+  let processedBuffer = fileBuffer;
+  let targetMimeType = mimeType;
+  let targetExt = path.extname(originalFilename) || '.jpg';
+
+  // 1. Automatic WebP Conversion & Optimization with Security Validations
+  if (mimeType.startsWith('image/')) {
+    try {
+      const imageInstance = sharp(fileBuffer);
+      const metadata = await imageInstance.metadata();
+
+      const validFormats = ['jpeg', 'jpg', 'png', 'webp', 'avif'];
+      if (!metadata.format || !validFormats.includes(metadata.format)) {
+        throw new Error(`تنسيق الصورة (${metadata.format || 'غير معروف'}) غير مدعوم أو تالف.`);
+      }
+
+      processedBuffer = await imageInstance
+        .rotate() // auto-orient based on camera/mobile EXIF orientation
+        .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true }) // prevent dimension bombs
+        .webp({ quality: 80, effort: 4 })
+        .toBuffer();
+
+      targetMimeType = 'image/webp';
+      targetExt = '.webp';
+    } catch (err: any) {
+      console.error('Sharp image processing error:', err.message);
+      throw new Error(`فشلت معالجة الصورة: ${err.message || 'الملف ليس صورة صالحة'}`);
+    }
+  } else {
+    throw new Error('مسموح برفع ملفات الصور فقط.');
+  }
+
+  // 2. Cloudinary Provider (If configured in .env)
   if (cloudName && apiKey && apiSecret) {
     try {
       const timestamp = Math.round(Date.now() / 1000);
@@ -27,8 +59,9 @@ export async function uploadFile(
       const signature = crypto.createHash('sha1').update(signaturePayload).digest('hex');
 
       const formData = new FormData();
-      const blob = new Blob([new Uint8Array(fileBuffer)], { type: mimeType });
-      formData.append('file', blob, originalFilename);
+      const webpFilename = `${path.basename(originalFilename, path.extname(originalFilename))}${targetExt}`;
+      const blob = new Blob([new Uint8Array(processedBuffer)], { type: targetMimeType });
+      formData.append('file', blob, webpFilename);
       formData.append('api_key', apiKey);
       formData.append('timestamp', timestamp.toString());
       formData.append('signature', signature);
@@ -49,33 +82,32 @@ export async function uploadFile(
       return {
         url: data.secure_url || data.url,
         provider: 'cloudinary',
-        filename: data.original_filename || originalFilename,
-        size: data.bytes || fileBuffer.length,
+        filename: data.original_filename || webpFilename,
+        size: data.bytes || processedBuffer.length,
       };
     } catch (err) {
       console.warn('Cloudinary upload failed, falling back to local storage:', err);
     }
   }
 
-  // 2. Default Local Storage Provider
+  // 3. Local Storage Provider (Saved as optimized .webp in public/uploads or public/avatars)
   const uploadDir = path.join(process.cwd(), 'public', folder);
   await mkdir(uploadDir, { recursive: true });
 
-  const fileExt = path.extname(originalFilename) || (mimeType.includes('png') ? '.png' : '.jpg');
   const safeBaseName = path
-    .basename(originalFilename, fileExt)
+    .basename(originalFilename, path.extname(originalFilename))
     .replace(/[^a-zA-Z0-9_-]/g, '_')
     .slice(0, 30);
   const uniqueSuffix = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-  const finalFilename = `${safeBaseName}_${uniqueSuffix}${fileExt}`;
+  const finalFilename = `${safeBaseName}_${uniqueSuffix}${targetExt}`;
   const filePath = path.join(uploadDir, finalFilename);
 
-  await writeFile(filePath, fileBuffer);
+  await writeFile(filePath, processedBuffer);
 
   return {
     url: `/${folder}/${finalFilename}`,
     provider: 'local',
     filename: finalFilename,
-    size: fileBuffer.length,
+    size: processedBuffer.length,
   };
 }
