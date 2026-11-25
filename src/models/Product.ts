@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export interface IWarehouseItemStock {
+  warehouseCode: string;
+  warehouseName: string;
+  quantity: number;
+}
+
 export interface IProductDocument extends Document {
   code: string;
   title: string;
@@ -12,6 +18,9 @@ export interface IProductDocument extends Document {
   description: string;
   sizes: string[];
   colors: { name: string; hex: string }[];
+  warehouseStock: IWarehouseItemStock[];
+  totalStock: number;
+  minStockAlert: number;
   inStock: boolean;
   featured: boolean;
   bestseller: boolean;
@@ -45,6 +54,15 @@ const ProductSchema: Schema = new Schema(
         hex: { type: String, required: true },
       },
     ],
+    warehouseStock: [
+      {
+        warehouseCode: { type: String, required: true },
+        warehouseName: { type: String, required: true },
+        quantity: { type: Number, default: 10 },
+      },
+    ],
+    totalStock: { type: Number, default: 40 },
+    minStockAlert: { type: Number, default: 5 },
     inStock: { type: Boolean, default: true },
     featured: { type: Boolean, default: false },
     bestseller: { type: Boolean, default: false },

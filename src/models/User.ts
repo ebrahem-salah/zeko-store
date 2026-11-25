@@ -5,7 +5,10 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   password?: string;
-  role: 'user' | 'admin';
+  phone?: string;
+  role: 'user' | 'manager' | 'admin';
+  permissions: string[];
+  assignedWarehouse?: string;
   avatar?: string;
   googleId?: string;
   isBlocked: boolean;
@@ -40,10 +43,23 @@ const UserSchema: Schema<IUser> = new Schema(
       minlength: [8, 'كلمة المرور يجب ألا تقل عن 8 أحرف'],
       select: false, // Don't return password by default
     },
+    phone: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'manager', 'admin'],
       default: 'user',
+    },
+    permissions: {
+      type: [String],
+      default: [],
+    },
+    assignedWarehouse: {
+      type: String,
+      default: '',
     },
     avatar: {
       type: String,

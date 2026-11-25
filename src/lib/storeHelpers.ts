@@ -1,3 +1,9 @@
+export interface IWarehouseItemStock {
+  warehouseCode: string;
+  warehouseName: string;
+  quantity: number;
+}
+
 export interface IProduct {
   _id?: string;
   code: string;
@@ -11,6 +17,8 @@ export interface IProduct {
   description: string;
   sizes: string[];
   colors: { name: string; hex: string }[];
+  warehouseStock?: IWarehouseItemStock[];
+  totalStock?: number;
   inStock: boolean;
   featured?: boolean;
   bestseller?: boolean;

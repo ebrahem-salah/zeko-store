@@ -33,12 +33,11 @@ export async function POST(req: Request) {
 
     // 1. Calculate totals
     const subtotal = data.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const total = subtotal; // can apply discount here
+    const total = subtotal;
 
     // 2. Generate unique human-readable order number
     const orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
 
-    // Optional user attachment
     const session = await getSessionUser();
 
     // 3. Create Order
@@ -59,12 +58,10 @@ export async function POST(req: Request) {
       userId: session?.userId || null,
     });
 
-    // 4. Get active site settings for WhatsApp number & currency
     const settings = await SiteSettings.findOne().lean();
-    const whatsappPhone = settings?.whatsappNumber || '201096986091';
-    const currency = settings?.currency || 'ر.س';
+    const whatsappPhone = settings?.whatsappNumber || '201070091692';
+    const currency = 'ج.م';
 
-    // 5. Generate WhatsApp Direct Checkout Link
     const whatsappLink = generateWhatsAppOrderLink(whatsappPhone, {
       orderNumber: order.orderNumber,
       customerName: order.customerName,
@@ -104,7 +101,7 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const user = await getSessionUser();
-    if (!user || user.role !== 'admin') {
+    if (!user || !['admin', 'manager'].includes(user.role)) {
       return NextResponse.json(
         { success: false, message: 'غير مصرح لك بعرض الطلبات.' },
         { status: 403 }
@@ -124,5 +121,45 @@ export async function GET() {
       { success: false, message: 'تعذر جلب الطلبات.' },
       { status: 500 }
     );
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const user = await getSessionUser();
+    if (!user || !['admin', 'manager'].includes(user.role)) {
+      return NextResponse.json(
+        { success: false, message: 'غير مصرح لك بتعديل الطلبات.' },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const { orderId, orderStatus, paymentStatus, notes } = body;
+
+    if (!orderId) {
+      return NextResponse.json({ success: false, message: 'معرف الطلب مطلوب.' }, { status: 400 });
+    }
+
+    await dbConnect();
+
+    const updateData: any = {};
+    if (orderStatus) updateData.orderStatus = orderStatus;
+    if (paymentStatus) updateData.paymentStatus = paymentStatus;
+    if (notes !== undefined) updateData.notes = notes;
+
+    const order = await Order.findByIdAndUpdate(orderId, updateData, { new: true });
+    if (!order) {
+      return NextResponse.json({ success: false, message: 'الطلب غير موجود.' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'تم تحديث حالة الطلب بنجاح.',
+      order,
+    });
+  } catch (error: any) {
+    console.error('Update order error:', error);
+    return NextResponse.json({ success: false, message: 'خطأ في تحديث الطلب.' }, { status: 500 });
   }
 }

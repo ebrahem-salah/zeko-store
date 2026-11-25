@@ -101,14 +101,14 @@ export default function DashboardPage() {
             {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Admin Panel Link if Admin */}
-            {user?.role === 'admin' && (
+            {/* Admin Panel Link if Admin or Manager */}
+            {(user?.role === 'admin' || user?.role === 'manager') && (
               <Link
                 href="/admin"
-                className="bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
               >
-                <ShieldAlert className="w-4 h-4 text-rose-600" />
-                <span className="hidden sm:inline">لوحة الإدارة (Admin Panel)</span>
+                <ShieldAlert className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">لوحة إدارة المخازن والمتجر</span>
                 <span className="sm:hidden">الإدارة</span>
               </Link>
             )}

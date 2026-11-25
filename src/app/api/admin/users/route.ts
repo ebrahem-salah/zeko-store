@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getSessionUser } from '@/lib/auth';
-import { dbConnect } from '@/lib/dbConnect';
+import { getSessionUser, hashPassword } from '@/lib/auth';
+import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 
 // 1. GET: Fetch users list with search & filter
 export async function GET(req: Request) {
   try {
     const session = await getSessionUser();
-    if (!session || session.role !== 'admin') {
+    if (!session || !['admin', 'manager'].includes(session.role)) {
       return NextResponse.json({ success: false, message: 'غير مصرح لك بالوصول.' }, { status: 403 });
     }
 
@@ -25,6 +25,7 @@ export async function GET(req: Request) {
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -48,7 +49,10 @@ export async function GET(req: Request) {
         firstName: u.firstName,
         lastName: u.lastName,
         email: u.email,
+        phone: u.phone || '',
         role: u.role,
+        permissions: u.permissions || [],
+        assignedWarehouse: u.assignedWarehouse || '',
         isBlocked: u.isBlocked,
         avatar: u.avatar,
         createdAt: u.createdAt,
@@ -60,15 +64,67 @@ export async function GET(req: Request) {
   }
 }
 
-// 2. PATCH: Update user role or toggle block status
+// 2. POST: Create a new user / manager / admin directly from admin panel
+export async function POST(req: Request) {
+  try {
+    const session = await getSessionUser();
+    if (!session || session.role !== 'admin') {
+      return NextResponse.json({ success: false, message: 'فقط المدير العام (Admin) يمكنه إضافة مستخدمين أو مشرفين جدد.' }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { firstName, lastName, email, password, phone, role, permissions, assignedWarehouse } = body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return NextResponse.json({ success: false, message: 'الاسم والبريد وكلمة المرور مطلوبة.' }, { status: 400 });
+    }
+
+    await dbConnect();
+
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return NextResponse.json({ success: false, message: 'البريد الإلكتروني مسجل بالفعل لمستخدم آخر.' }, { status: 400 });
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const newUser = await User.create({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+      phone: phone || '',
+      role: role && ['user', 'manager', 'admin'].includes(role) ? role : 'user',
+      permissions: permissions || [],
+      assignedWarehouse: assignedWarehouse || '',
+      isBlocked: false,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'تم إضافة المستخدم / المشرف بنجاح.',
+      user: {
+        id: newUser._id,
+        name: `${newUser.firstName} ${newUser.lastName}`,
+        email: newUser.email,
+        role: newUser.role,
+      },
+    });
+  } catch (error: any) {
+    console.error('Admin create user error:', error);
+    return NextResponse.json({ success: false, message: error.message || 'خطأ في إنشاء الحساب.' }, { status: 500 });
+  }
+}
+
+// 3. PATCH: Update user role, permissions, assigned warehouse, or block status
 export async function PATCH(req: Request) {
   try {
     const session = await getSessionUser();
     if (!session || session.role !== 'admin') {
-      return NextResponse.json({ success: false, message: 'غير مصرح لك بالوصول.' }, { status: 403 });
+      return NextResponse.json({ success: false, message: 'غير مصرح لك بتعديل الصلاحيات.' }, { status: 403 });
     }
 
-    const { userId, isBlocked, role } = await req.json();
+    const { userId, isBlocked, role, permissions, assignedWarehouse, phone } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ success: false, message: 'معرف المستخدم مطلوب.' }, { status: 400 });
@@ -83,7 +139,10 @@ export async function PATCH(req: Request) {
 
     const updateData: any = {};
     if (typeof isBlocked === 'boolean') updateData.isBlocked = isBlocked;
-    if (role && ['user', 'admin'].includes(role)) updateData.role = role;
+    if (role && ['user', 'manager', 'admin'].includes(role)) updateData.role = role;
+    if (Array.isArray(permissions)) updateData.permissions = permissions;
+    if (assignedWarehouse !== undefined) updateData.assignedWarehouse = assignedWarehouse;
+    if (phone !== undefined) updateData.phone = phone;
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
 
@@ -93,11 +152,14 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'تم تحديث بيانات المستخدم بنجاح.',
+      message: 'تم تحديث بيانات وصلاحيات المستخدم بنجاح.',
       user: {
         id: updatedUser._id,
         name: `${updatedUser.firstName} ${updatedUser.lastName}`,
+        email: updatedUser.email,
         role: updatedUser.role,
+        permissions: updatedUser.permissions,
+        assignedWarehouse: updatedUser.assignedWarehouse,
         isBlocked: updatedUser.isBlocked,
       },
     });
